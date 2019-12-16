@@ -6,7 +6,12 @@
  */
 package org.freeinternals.javaclassviewer;
 
+import org.freeinternals.commonlib.core.BytesTool;
+import org.freeinternals.commonlib.ui.JPanelForTree;
+import org.freeinternals.commonlib.ui.UITool;
+
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +26,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -33,9 +40,6 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import org.freeinternals.commonlib.ui.JPanelForTree;
-import org.freeinternals.commonlib.ui.UITool;
-import org.freeinternals.commonlib.core.BytesTool;
 
 /**
  *
@@ -44,6 +48,7 @@ import org.freeinternals.commonlib.core.BytesTool;
 public final class Main extends JFrame {
 
     private static final long serialVersionUID = 4876543219876500000L;
+    private static final String WINDOWS = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
     private JTreeZipFile zftree;
     private JPanelForTree zftreeContainer;
     private JSplitPaneClassFile cfPane;
@@ -51,10 +56,19 @@ public final class Main extends JFrame {
     private Main() {
         this.setTitle("Java Class Viewer");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        updateLookAndFeel(this);
         UITool.centerJFrame(this);
         this.createMenu();
         this.setVisible(true);
+    }
+
+    public static void updateLookAndFeel(Component frame) {
+        try {
+            UIManager.setLookAndFeel(WINDOWS);
+            SwingUtilities.updateComponentTreeUI(frame);
+        } catch (Exception ex) {
+
+        }
     }
 
     private void createMenu() {
@@ -65,9 +79,9 @@ public final class Main extends JFrame {
         final JMenu menuFile = new JMenu("File");
         menuFile.setMnemonic(KeyEvent.VK_F);
         menuBar.add(menuFile);
-
+        System.out.println(System.getProperty("user.dir"));
         // File --> Open
-        final JMenuItem menuItem_FileOpen = new JMenuItem("Open...", UIManager.getIcon("FileView.directoryIcon"));
+        final JMenuItem menuItem_FileOpen = new JMenuItem("Open...", new ImageIcon(getClass().getResource("/image/open.png")));
         menuItem_FileOpen.setMnemonic(KeyEvent.VK_O);
         menuItem_FileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         menuItem_FileOpen.addActionListener(new ActionListener() {
@@ -79,7 +93,7 @@ public final class Main extends JFrame {
         menuFile.add(menuItem_FileOpen);
 
         // File --> Close
-        final JMenuItem menuItem_FileClose = new JMenuItem("Close", UIManager.getIcon("InternalFrame.iconifyIcon"));
+        final JMenuItem menuItem_FileClose = new JMenuItem("Close", new ImageIcon(getClass().getResource("/image/close.png")));
         menuItem_FileClose.setMnemonic(KeyEvent.VK_C);
         menuItem_FileClose.addActionListener(new ActionListener() {
             @Override

@@ -6,32 +6,16 @@
  */
 package org.freeinternals.format.classfile;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.freeinternals.commonlib.core.FileFormatException;
 import org.freeinternals.commonlib.core.PosByteArrayInputStream;
 import org.freeinternals.commonlib.core.PosDataInputStream;
-import org.freeinternals.commonlib.core.FileFormatException;
 import org.freeinternals.format.classfile.attribute.AttributeInfo;
 import org.freeinternals.format.classfile.constant.CPInfo;
 import org.freeinternals.format.classfile.constant.CPInfo.ConstantType;
 import org.freeinternals.format.classfile.constant.ConstantClassInfo;
-import org.freeinternals.format.classfile.constant.ConstantDoubleInfo;
-import org.freeinternals.format.classfile.constant.ConstantDynamicInfo;
-import org.freeinternals.format.classfile.constant.ConstantFieldrefInfo;
-import org.freeinternals.format.classfile.constant.ConstantFloatInfo;
-import org.freeinternals.format.classfile.constant.ConstantIntegerInfo;
-import org.freeinternals.format.classfile.constant.ConstantInterfaceMethodrefInfo;
-import org.freeinternals.format.classfile.constant.ConstantInvokeDynamicInfo;
-import org.freeinternals.format.classfile.constant.ConstantLongInfo;
-import org.freeinternals.format.classfile.constant.ConstantMethodHandleInfo;
-import org.freeinternals.format.classfile.constant.ConstantMethodTypeInfo;
-import org.freeinternals.format.classfile.constant.ConstantMethodrefInfo;
-import org.freeinternals.format.classfile.constant.ConstantModuleInfo;
-import org.freeinternals.format.classfile.constant.ConstantNameAndTypeInfo;
-import org.freeinternals.format.classfile.constant.ConstantPackageInfo;
-import org.freeinternals.format.classfile.constant.ConstantStringInfo;
 import org.freeinternals.format.classfile.constant.ConstantUtf8Info;
+
+import java.io.IOException;
 
 /**
  * Represents a {@code class} file. A {@code class} file structure has the
@@ -131,7 +115,7 @@ public class ClassFile {
 
     /**
      * A mask of flags used to denote access permissions to and properties of this class or interface.
-     * 
+     *
      * @see AccessFlag#ACC_PUBLIC
      * @see AccessFlag#ACC_FINAL
      * @see AccessFlag#ACC_SUPER
@@ -489,11 +473,13 @@ public class ClassFile {
         if (index == 0) {
             throw new IllegalArgumentException("Constant Pool Index cannot be zero. index=" + index);
         }
-        
+
         CPInfo cp = this.constant_pool[index];
         if (cp == null) {
             // For Double, Long type, each item take two indexs, so there could be some index contains nothing.
-            throw new IllegalArgumentException("Nothing exist at the Constant Pool Index. index=" + index);
+            // throw new IllegalArgumentException("Nothing exist at the Constant Pool Index. index=" + index);
+            // Here, return a default error messge instead of throwing an exception because it will fail all process.
+            return "Nothing exist at the Constant Pool Index. index=" + index;
         }
 
         return cp.toString(this.constant_pool);
